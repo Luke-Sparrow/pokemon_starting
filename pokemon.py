@@ -35,6 +35,7 @@ class Pokemon:
         self.currenthp = recovery_amount
         print('{} has recovered from being knocked out! {} is now at {} HP!'.format(self.name, self.name, self.currenthp))
 
+#Will be used once a pokemon is reduced to 0 HP
     def battle_victory(self, exp_amount):
         self.exp += exp_amount
         for key in exp_table.keys():
@@ -48,6 +49,7 @@ class FireType(Pokemon):
     def __init__(self, *args, **kwargs):
         super(FireType, self).__init__(*args, **kwargs)
 
+#determines the effectiveness of an attack against a given target
     def attack(self, target):
         if self.ko_status == True:
             print('This Pokemon has been knocked out and can no longer attack!')
@@ -67,6 +69,7 @@ class WaterType(Pokemon):
     def __init__(self, *args, **kwargs):
         super(WaterType, self).__init__(*args, **kwargs)
 
+#determines the effectiveness of an attack against a given target
     def attack(self, target):
         if self.ko_status == True:
             print('This Pokemon has been knocked out and can no longer attack!')
@@ -86,6 +89,7 @@ class GrassType(Pokemon):
     def __init__(self, *args, **kwargs):
         super(GrassType, self).__init__(*args, **kwargs)
 
+#determines the effectiveness of an attack against a given target
     def attack(self, target):
         if self.ko_status == True:
             print('This Pokemon has been knocked out and can no longer attack!')
@@ -106,6 +110,7 @@ class Trainer:
         self.current_active = current_active_pokemon
         self.pokemon = pokemon_list
 
+#restores health to target pokemon
     def use_potion(self, target):
         updated_hp = target.currenthp
         if target.maxhp < (target.currenthp + 20):
@@ -114,6 +119,7 @@ class Trainer:
         else:
             target.gain_health(20)
 
+#targets another trainer, finding current active pokemon for both trainers
     def attack(self, target):
         attacking_pokemon = self.pokemon[self.current_active]
         defending_pokemon = target.pokemon[target.current_active]
@@ -130,6 +136,7 @@ class Trainer:
         else:
             print('You do not have that Pokemon!')
 
+#creates the initial pokemon and trainers to test
 squirtle = WaterType('Squirtle', 4, 'Water', 35, 35, 0)
 charmander = FireType('Charmander', 4, 'Fire', 35, 35, 0)
 bulbasaur = GrassType('Bulbasaur', 4, 'Grass', 35, 35, 0)
@@ -137,6 +144,7 @@ ash = Trainer('Ash', 4, 0, [squirtle])
 gary = Trainer('Gary', 4, 0, [charmander])
 
 
-#print(gary.pokemon[gary.current_active].currenthp)
+#have the trainers attack each other for testing
+#Can also use tests for healing, reviving, switching, etc. 
 ash.attack(gary)
 gary.attack(ash)
