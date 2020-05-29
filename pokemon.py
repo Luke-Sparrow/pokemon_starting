@@ -1,10 +1,13 @@
+exp_table = {1:100, 2:250, 3:450, 4:650, 5:900, 6:1300, 7:1800, 8:2300, 9:2700, 10:3000}
+
 class Pokemon:
-    def __init__(self, name, level, element_type, max_hp, current_hp, ko= False):
+    def __init__(self, name, level, element_type, max_hp, current_hp, current_exp, ko= False):
         self.name = name
         self.level = level
         self.type = element_type
         self.maxhp = max_hp
         self.currenthp = current_hp
+        self.exp = current_exp
         self.ko_status = ko
 
     def __repr__(self):
@@ -23,7 +26,6 @@ class Pokemon:
             print('{} recovered {} health and is now at {} HP!'.format(self.name, heal_amount, self.currenthp))
             self.revive()
 
-
     def knockout(self):
         self.ko_status = True
         print('{} is at 0 HP! {} was knocked out!'.format(self.name, self.name))
@@ -32,6 +34,19 @@ class Pokemon:
         self.ko_status = False
         self.currenthp = recovery_amount
         print('{} has recovered from being knocked out! {} is now at {} HP!'.format(self.name, self.name, self.currenthp))
+
+    def battle_victory(self, exp_amount):
+        self.exp += exp_amount
+        for key in exp_table.keys():
+            if self.level >= key:
+                pass
+            elif self.exp >= exp_table[key]:
+                self.level = key
+                self.exp = 0
+
+class FireType(Pokemon):
+    def __init__(self, *args, **kwargs):
+        super(FireType, self).__init__(*args, **kwargs)
 
     def attack(self, target):
         if self.ko_status == True:
@@ -48,6 +63,13 @@ class Pokemon:
             print('{} attacks {}.'.format(self.name, target.name))
             target.lose_health(self.level)
 
+class WaterType(Pokemon):
+    def __init__(self, *args, **kwargs):
+        super(WaterType, self).__init__(*args, **kwargs)
+
+    def attack(self, target):
+        if self.ko_status == True:
+            print('This Pokemon has been knocked out and can no longer attack!')
         elif self.type == 'Water' and target.type == 'Fire':
             print('{} used a super effective attack!'.format(self.name))
             target.lose_health(self.level * 2)
@@ -60,14 +82,19 @@ class Pokemon:
             print('{} attacks {}.'.format(self.name, target.name))
             target.lose_health(self.level)
 
+class GrassType(Pokemon):
+    def __init__(self, *args, **kwargs):
+        super(GrassType, self).__init__(*args, **kwargs)
+
+    def attack(self, target):
+        if self.ko_status == True:
+            print('This Pokemon has been knocked out and can no longer attack!')
         elif self.type == 'Grass' and target.type == 'Water':
             print('{} used a super effective attack!'.format(self.name))
             target.lose_health(self.level * 2)
-
         elif self.type == 'Grass' and target.type == 'Fire':
             print('{}\'s attack was not very effective...'.format(self.name))
             target.lose_health(self.level / 2)
-
         else:
             print('{} attacks {}.'.format(self.name, target.name))
             target.lose_health(self.level)
@@ -103,8 +130,9 @@ class Trainer:
         else:
             print('You do not have that Pokemon!')
 
-squirtle = Pokemon('Squirtle', 4, 'Water', 35, 35)
-charmander = Pokemon('Charmander', 4, 'Fire', 35, 35)
+squirtle = WaterType('Squirtle', 4, 'Water', 35, 35, 0)
+charmander = FireType('Charmander', 4, 'Fire', 35, 35, 0)
+bulbasaur = GrassType('Bulbasaur', 4, 'Grass', 35, 35, 0)
 ash = Trainer('Ash', 4, 0, [squirtle])
 gary = Trainer('Gary', 4, 0, [charmander])
 
